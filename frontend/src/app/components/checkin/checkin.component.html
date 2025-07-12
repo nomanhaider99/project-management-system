@@ -1,0 +1,35 @@
+<div class="w-full h-[95vh] flex justify-center items-center">
+    <form [formGroup]="checkinData" (ngSubmit)="onSubmitData()"
+        class="w-[500px] px-4 py-3 border-[1px] border-zinc-300 rounded-md flex flex-col gap-6">
+        <div class="text-2xl font-medium tracking-tighter">CheckIn Your Product</div>
+        <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-1">
+                <label for="serialno" class="text-sm font-medium">Serial No</label>
+                <input required class="px-2 py-1 rounded-md border-[1px] border-zinc-300" name="serialno"
+                    formControlName="serialno" placeholder="e.g: SG-100984" />
+            </div>
+            <div class="flex flex-col gap-1">
+                <label for="name" class="text-sm font-medium">Product Name</label>
+                <input required class="px-2 py-1 rounded-md border-[1px] border-zinc-300" name="productname"
+                    formControlName="productname" placeholder="e.g: Earphones" />
+            </div>
+            <div class="flex flex-col gap-1">
+                <label for="quantity" class="text-sm font-medium">Quantity</label>
+                <input required class="px-2 py-1 rounded-md border-[1px] border-zinc-300" name="quantity"
+                    formControlName="quantity" placeholder="e.g: 120" type="number" />
+            </div>
+            <div class="flex flex-col gap-1">
+                <label for="category" class="text-sm font-medium">Category</label>
+                <select class="px-2 py-1 rounded-md border-[1px]" formControlName="category">
+                    <option class="border-[1px] border-y-zinc-800" *ngFor="let item of categoriesData" [value]="item.name">{{item.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="w-full flex justify-center items-center">
+            <app-button class="w-[400px]" type="submit" text="Check In" [isPrimary]="true"></app-button>
+        </div>
+        <div>
+            <a routerLink="/dashboard" class="hover:underline">Go To Dashboard</a>
+        </div>
+    </form>
+</div>

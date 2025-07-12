@@ -1,0 +1,32 @@
+<div class="bg-white rounded-md w-full">
+    <table #table class="w-full rounded-lg">
+        <thead class="py-2 bg-blue-50">
+            <tr class="border-[1px] border-zinc-300">
+                <td class="text-center border-x-[1px] border-zinc-300">Id</td>
+                <td class="text-center border-x-[1px] border-zinc-300">Serial No</td>
+                <td class="text-center border-x-[1px] border-zinc-300">Name</td>
+                <td class="text-center border-x-[1px] border-zinc-300">Quantity</td>
+                <td class="text-center border-x-[1px] border-zinc-300">Category</td>
+                <td class="text-center border-x-[1px] border-zinc-300">Actions</td>
+            </tr>
+        </thead>
+        <tbody class="text-zinc-700">
+            <tr class="border-[1px] border-zinc-300" *ngFor="let product of data; index as i">
+                <td #id class="py-2 border-x-[1px] border-zinc-300 px-2 text-center">{{i+1}}</td>
+                <td #serialno [contentEditable]="EditComponent"  class="py-2 border-x-[1px] border-zinc-300 px-2 text-center ">{{product.serialno}}</td>
+                <td #productname [contentEditable]="EditComponent" class="py-2 border-x-[1px] border-zinc-300 px-2 text-center ">{{product.productname}}</td>
+                <td #quantity [contentEditable]="EditComponent" class="py-2 border-x-[1px] border-zinc-300 px-2 text-center ">{{product.quantity}}</td>
+                <td #category [contentEditable]="EditComponent" class="py-2 border-x-[1px] border-zinc-300 px-2 text-center ">{{product.category}}</td>
+                <td class="py-2 border-x-[1px] border-zinc-300 px-2 flex justify-center items-center gap-2">
+                    <button class="border-[1px] border-zinc-300 px-4 py-1 rounded-md" (click)="onDisableData(i+1)" >Disable Product</button>
+                    <button (click)="enableEdit(product)" class="px-4 py-2 rounded-md bg-blue-500 text-white">Edit Product</button>
+                    <button [disabled]="disabled" (click)="editData(i+1)" [ngClass]="{
+                        'bg-zinc-300 text-white': disabled,
+                        'bg-zinc-900 text-white': !disabled,
+                        'px-4 py-2 rounded-md border-[1px]': true,
+                    }">Save</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
