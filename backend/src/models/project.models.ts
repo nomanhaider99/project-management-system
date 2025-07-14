@@ -15,7 +15,7 @@ export class Project {
     owner: Business 
 
     @Prop({ required: false, type: mongoose.Schema.Types.ObjectId, ref: "User" })
-    members?: User[]
+    members?: mongoose.Schema.Types.ObjectId[]
 
     @Prop({ required: false })
     status?: "ongoing" | "completed" | "expired"

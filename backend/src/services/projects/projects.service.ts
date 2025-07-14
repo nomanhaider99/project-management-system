@@ -4,6 +4,7 @@ import { Model } from "mongoose";
 import { Business } from "src/models/business.models";
 import { Project } from "src/models/project.models";
 import { User } from "src/models/user.models";
+import moment from 'moment';
 
 @Injectable()
 export class ProjectService {
@@ -51,11 +52,11 @@ export class ProjectService {
                 }
             );
 
-            await this.businessModel.findOne({
-                _id: owner
-            }).updateMany({
-                projects: createdProject
-            });
+            await this.businessModel.findByIdAndUpdate(owner, {
+                $push: {
+                    projects: createdProject
+                }
+            })
 
             return {
                 message: 'Project Created Successfully!',
@@ -64,8 +65,8 @@ export class ProjectService {
         }
     }
 
-    async getProjects() {
-        const projects = await this.projectModel.find();
+    async getProjectsOfBusiness(id: string) {
+        const projects = await this.projectModel.find({ owner: id });
         if (!projects) {
             throw new NotFoundException(
                 {
@@ -108,7 +109,7 @@ export class ProjectService {
         }
     }
 
-    async updateProject(id: string, members?: User[], status?: "ongoing" | "completed" | "expired", priority?: "low" | "medium" | "urgent", progress?: number, startDate?: Date, endDate?: Date) {
+    async updateProject(id: string, members?: User[], status?: "ongoing" | "completed" | "expired", priority?: "low" | "medium" | "urgent", progress?: number, startDate?: string, endDate?: string) {
         if (!id) {
             throw new BadRequestException(
                 {
@@ -128,8 +129,10 @@ export class ProjectService {
                 message: 'Project Not Found!',
             })
         } else {
-            const updatedProject = await this.projectModel.updateOne({
-                members,
+            const updatedProject = await project.updateOne({
+                $push: {
+                    members
+                },
                 status,
                 priority,
                 progress,
@@ -161,14 +164,14 @@ export class ProjectService {
         if (!project) {
             throw new NotFoundException({
                 message: 'Project Not Found!',
-            })
+            });
         } else {
-            const updatedProject = await this.projectModel.updateOne({
-                members,
+            const updatedProjectWithAddedMembers = await project.updateOne({
+                members
             });
             return {
                 message: 'Members Added Successfully!',
-                data: updatedProject
+                data: updatedProjectWithAddedMembers
             }
         }
     }
@@ -193,10 +196,10 @@ export class ProjectService {
                 message: 'Project Not Found!',
             })
         } else {
-            const filteredMembers = project.members?.filter((value) => members.forEach((member) => value !== member));
+            // const filteredMembers = project.members?.filter((value) => members.forEach((member) => value !== member));
             return {
                 message: 'Members Deleted Successfully!',
-                data: filteredMembers
+                data: ''
             }
         }
     }
@@ -222,6 +225,9 @@ export class ProjectService {
             })
         } else {
             const deletedProject = await project.deleteOne();
+            // await this.businessModel.findByIdAndUpdate(project.owner, {
+            //     projects
+            // }) TODO: Remove that owner ID
             return {
                 message: 'Project Deleted Successfully!',
                 data: deletedProject

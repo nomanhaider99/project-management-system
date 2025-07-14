@@ -13,9 +13,10 @@ export class ProjectsController {
         response.json(project);
     }
 
-    @Get('get-projects')
-    async getAllProjects(@Res() response: Response) {
-        const project = await this.projectService.getProjects();
+    @Get('get-projects/:id')
+    async getAllProjects(@Res() response: Response, @Param() params) {
+        const { id } = params;
+        const project = await this.projectService.getProjectsOfBusiness(id);
         response.json(project);
     }
 
@@ -31,6 +32,14 @@ export class ProjectsController {
         const { id } = params;
         const { members, status, priority, progress, startDate, endDate } = body;
         const project = await this.projectService.updateProject(id, members, status, priority, progress, startDate, endDate);
+        response.json(project);
+    }
+
+    @Patch('add-members/:id')
+    async addMembers(@Body() body, @Param() params, @Res() response: Response) {
+        const { id } = params;
+        const { members } = body;
+        const project = await this.projectService.addMembers(id, members);
         response.json(project);
     }
 
