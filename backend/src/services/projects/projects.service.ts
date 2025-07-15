@@ -189,7 +189,8 @@ export class ProjectService {
 
         const project = await this.projectModel.findOne(
             {
-                _id: id
+                _id: id,
+                members: member
             }
         );
 
@@ -198,26 +199,14 @@ export class ProjectService {
                 message: 'Project Not Found!',
             })
         } else {
-            const isMemberExistsInProject = this.projectModel.findOne({
-                members: {
-                    equals: member
+            const updatedProjectWithDeletedMembers = await project.updateOne({
+                $pull: {
+                    members: member
                 }
-            });
-            console.log("MEMBER EXISTS: ", isMemberExistsInProject);
-            if (!isMemberExistsInProject) {
-                throw new NotFoundException(
-                    {
-                        message: 'Member Doesnot Exists In Project!'
-                    }
-                )
-            } else {
-                // await isMemberExistsInProject.updateOne({
-
-                // })
-                return {
-                    message: 'Member Deleted Successfully!',
-                    data: project
-                }
+            })
+            return {
+                message: 'Member Deleted Successfully!',
+                data: updatedProjectWithDeletedMembers
             }
         }
     }
@@ -247,7 +236,7 @@ export class ProjectService {
                 $pull: {
                     projects: project._id
                 }
-            }) 
+            })
             return {
                 message: 'Project Deleted Successfully!',
                 data: deletedProject
