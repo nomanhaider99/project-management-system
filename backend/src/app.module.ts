@@ -5,12 +5,15 @@ import { ProjectsController } from './controllers/projects/projects.controller';
 import { userModule } from './services/users/users.module';
 import { UserService } from './services/users/users.service';
 import { User, UserSchema } from './models/user.models';
-import { ConfigModule } from '@nestjs/config';
 import { BusinessController } from './controllers/business/business.controller';
 import { BusinessService } from './services/business/business.service';
 import { Business, BusinessSchema } from './models/business.models';
 import { Project, ProjectSchema } from './models/project.models';
 import { ProjectService } from './services/projects/projects.service';
+import { MilestonesService } from './services/milestones/milestones.service';
+import { MilestonesController } from './controllers/milestones/milestones.controller';
+import { MilestoneModule } from './services/milestones/milestones.module';
+import { Milestone, MilestoneSchema } from './models/milestone.models';
 
 @Module({
   imports: [
@@ -28,12 +31,17 @@ import { ProjectService } from './services/projects/projects.service';
         {
           name: Project.name,
           schema: ProjectSchema
+        },
+        {
+          name: Milestone.name,
+          schema: MilestoneSchema
         }
       ]
     ),
-    userModule
+    userModule,
+    MilestoneModule,
   ],
-  controllers: [UsersController, ProjectsController, BusinessController],
-  providers: [UserService, BusinessService, ProjectService],
+  controllers: [UsersController, ProjectsController, BusinessController, MilestonesController],
+  providers: [UserService, BusinessService, ProjectService, MilestonesService],
 })
 export class AppModule {}

@@ -14,9 +14,6 @@ export class Milestone {
     @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "Project" })
     project: Project 
 
-    @Prop({ required: false, type: mongoose.Schema.Types.ObjectId, ref: "User" })
-    members?: User[] 
-
     @Prop({ required: false })
     status?: "ongoing" | "completed"
 

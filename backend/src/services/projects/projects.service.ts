@@ -64,7 +64,7 @@ export class ProjectService {
             }
         }
     }
-
+    
     async getProjectsOfBusiness(id: string) {
         const projects = await this.projectModel.find({ owner: id });
         if (!projects.length) {

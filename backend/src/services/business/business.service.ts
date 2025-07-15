@@ -61,7 +61,7 @@ export class BusinessService {
 
     async getBusiness() {
         const businesses = await this.businessModel.find();
-        if (!businesses) {
+        if (!businesses.length) {
             throw new NotFoundException(
                 {
                     message: 'Businesses Not Found!',
