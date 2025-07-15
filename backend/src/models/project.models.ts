@@ -14,7 +14,7 @@ export class Project {
     @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "Business" })
     owner: Business 
 
-    @Prop({ required: false, type: mongoose.Schema.Types.ObjectId, ref: "User" })
+    @Prop({ required: false, type: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}] })
     members?: mongoose.Schema.Types.ObjectId[]
 
     @Prop({ required: false })

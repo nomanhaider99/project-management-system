@@ -30,16 +30,24 @@ export class ProjectsController {
     @Patch('update-project/:id')
     async updateProjectById(@Body() body, @Param() params, @Res() response: Response) {
         const { id } = params;
-        const { members, status, priority, progress, startDate, endDate } = body;
-        const project = await this.projectService.updateProject(id, members, status, priority, progress, startDate, endDate);
+        const { member, status, priority, progress, startDate, endDate } = body;
+        const project = await this.projectService.updateProject(id, member, status, priority, progress, startDate, endDate);
         response.json(project);
     }
 
-    @Patch('add-members/:id')
+    @Patch('add-member/:id')
     async addMembers(@Body() body, @Param() params, @Res() response: Response) {
         const { id } = params;
-        const { members } = body;
-        const project = await this.projectService.addMembers(id, members);
+        const { member } = body;
+        const project = await this.projectService.addMembers(id, member);
+        response.json(project);
+    }
+
+    @Patch('delete-member/:id')
+    async deleteMemberById(@Body() body, @Param() params, @Res() response: Response) {
+        const { id } = params;
+        const { member } = body;
+        const project = await this.projectService.deleteMember(id, member);
         response.json(project);
     }
 

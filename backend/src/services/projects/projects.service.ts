@@ -67,7 +67,7 @@ export class ProjectService {
 
     async getProjectsOfBusiness(id: string) {
         const projects = await this.projectModel.find({ owner: id });
-        if (!projects) {
+        if (!projects.length) {
             throw new NotFoundException(
                 {
                     message: 'Projects Not Found!',
@@ -109,7 +109,7 @@ export class ProjectService {
         }
     }
 
-    async updateProject(id: string, members?: User[], status?: "ongoing" | "completed" | "expired", priority?: "low" | "medium" | "urgent", progress?: number, startDate?: string, endDate?: string) {
+    async updateProject(id: string, member?: string, status?: "ongoing" | "completed" | "expired", priority?: "low" | "medium" | "urgent", progress?: number, startDate?: string, endDate?: string) {
         if (!id) {
             throw new BadRequestException(
                 {
@@ -130,8 +130,8 @@ export class ProjectService {
             })
         } else {
             const updatedProject = await project.updateOne({
-                $push: {
-                    members
+                $addToSet: {
+                    members: member
                 },
                 status,
                 priority,
@@ -146,7 +146,7 @@ export class ProjectService {
         }
     }
 
-    async addMembers(id: string, members: User[]) {
+    async addMembers(id: string, member: string) {
         if (!id) {
             throw new BadRequestException(
                 {
@@ -167,16 +167,18 @@ export class ProjectService {
             });
         } else {
             const updatedProjectWithAddedMembers = await project.updateOne({
-                members
-            });
+                $addToSet: {
+                    members: member
+                }
+            })
             return {
-                message: 'Members Added Successfully!',
+                message: 'Member Added Successfully!',
                 data: updatedProjectWithAddedMembers
             }
         }
     }
 
-    async deleteMembers(id: string, members: User[]) {
+    async deleteMember(id: string, member: string) {
         if (!id) {
             throw new BadRequestException(
                 {
@@ -196,10 +198,26 @@ export class ProjectService {
                 message: 'Project Not Found!',
             })
         } else {
-            // const filteredMembers = project.members?.filter((value) => members.forEach((member) => value !== member));
-            return {
-                message: 'Members Deleted Successfully!',
-                data: ''
+            const isMemberExistsInProject = this.projectModel.findOne({
+                members: {
+                    equals: member
+                }
+            });
+            console.log("MEMBER EXISTS: ", isMemberExistsInProject);
+            if (!isMemberExistsInProject) {
+                throw new NotFoundException(
+                    {
+                        message: 'Member Doesnot Exists In Project!'
+                    }
+                )
+            } else {
+                // await isMemberExistsInProject.updateOne({
+
+                // })
+                return {
+                    message: 'Member Deleted Successfully!',
+                    data: project
+                }
             }
         }
     }
@@ -225,9 +243,11 @@ export class ProjectService {
             })
         } else {
             const deletedProject = await project.deleteOne();
-            // await this.businessModel.findByIdAndUpdate(project.owner, {
-            //     projects
-            // }) TODO: Remove that owner ID
+            await this.businessModel.findByIdAndUpdate(project.owner, {
+                $pull: {
+                    projects: project._id
+                }
+            }) 
             return {
                 message: 'Project Deleted Successfully!',
                 data: deletedProject
