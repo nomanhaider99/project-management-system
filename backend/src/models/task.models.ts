@@ -2,6 +2,7 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Project } from './project.models';
 import mongoose from 'mongoose';
 import { User } from './user.models';
+import { Milestone } from './milestone.models';
 
 @Schema()
 export class Task {
@@ -14,8 +15,8 @@ export class Task {
     @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "Project" })
     project: Project 
 
-    @Prop({ required: false, type: mongoose.Schema.Types.ObjectId, ref: "User" })
-    members?: User[]
+    @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "Milestone" })
+    milestone: Milestone 
 
     @Prop({ required: false })
     status?: "ongoing" | "completed"

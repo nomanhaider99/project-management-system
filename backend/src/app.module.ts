@@ -14,6 +14,10 @@ import { MilestonesService } from './services/milestones/milestones.service';
 import { MilestonesController } from './controllers/milestones/milestones.controller';
 import { MilestoneModule } from './services/milestones/milestones.module';
 import { Milestone, MilestoneSchema } from './models/milestone.models';
+import { TasksService } from './services/tasks/tasks.service';
+import { Task, TaskSchema } from './models/task.models';
+import { TaskModule } from './services/tasks/tasks.module';
+import { TasksController } from './controllers/tasks/tasks.controller';
 
 @Module({
   imports: [
@@ -35,13 +39,18 @@ import { Milestone, MilestoneSchema } from './models/milestone.models';
         {
           name: Milestone.name,
           schema: MilestoneSchema
-        }
+        },
+        {
+          name: Task.name,
+          schema: TaskSchema
+        },
       ]
     ),
     userModule,
     MilestoneModule,
+    TaskModule
   ],
-  controllers: [UsersController, ProjectsController, BusinessController, MilestonesController],
-  providers: [UserService, BusinessService, ProjectService, MilestonesService],
+  controllers: [UsersController, ProjectsController, BusinessController, MilestonesController, TasksController],
+  providers: [UserService, BusinessService, ProjectService, MilestonesService, TasksService],
 })
 export class AppModule {}

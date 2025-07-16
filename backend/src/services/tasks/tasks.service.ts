@@ -1,14 +1,13 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Business } from 'src/models/business.models';
-import { Milestone } from 'src/models/milestone.models';
+import { Task } from 'src/models/task.models';
 
 @Injectable()
-export class MilestonesService {
-    constructor(@InjectModel(Milestone.name) private milestoneModel: Model<Milestone>) { }
+export class TasksService {
+    constructor(@InjectModel(Task.name) private taskModel: Model<Task>) { }
 
-    async createMilestone(title: string, project: string, description?: string) {
+    async createTask(title: string, project: string, milestone: string, description?: string) {
         if (!title) {
             throw new BadRequestException(
                 {
@@ -21,55 +20,65 @@ export class MilestonesService {
                     message: 'Invalid Project Id!',
                 }
             )
+        } else if (!milestone) {
+            throw new BadRequestException(
+                {
+                    message: 'Invalid Milestone Id!',
+                }
+            )
         }
 
-        const milestoneExists = await this.milestoneModel.findOne(
+        const taskExists = await this.taskModel.findOne(
             {
                 title
             }
         );
 
-        if (milestoneExists) {
+        if (taskExists) {
             throw new ForbiddenException(
                 {
-                    message: 'Milestone Already Exists!',
-                    data: milestoneExists
+                    message: 'Task Already Exists!',
+                    data: taskExists
                 }
             )
         } else {
-            const createdMilestone = await this.milestoneModel.create(
+            const createdTask = await this.taskModel.create(
                 {
                     title,
                     description,
-                    project
+                    project,
+                    milestone
                 }
             );
 
             return {
-                message: 'Milestone Created Successfully!',
-                data: createdMilestone
+                message: 'Task Created Successfully!',
+                data: createdTask
             }
         }
     }
 
-    async getMilestones() {
-        const milestones = await this.milestoneModel.find();
-        if (!milestones.length) {
+    async getTasksOfMilestoneOfProject(milestone: string, project: string) {
+        const tasks = await this.taskModel.find({
+            milestone,
+            project
+        });
+        if (!tasks.length) {
             throw new NotFoundException(
                 {
-                    message: 'Milestones Not Found!',
+                    message: 'Tasks Not Found!',
                     data: null
                 }
             )
         } else {
             return {
-                message: 'Milestones Found!',
-                data: milestones
+                message: 'Tasks Found!',
+                data: tasks
             }
         }
     }
 
-    async getMilestoneById(id: string) {
+    async getTaskById(id: string) {
         if (!id) {
             throw new BadRequestException(
                 {
@@ -78,25 +87,25 @@ export class MilestonesService {
             )
         }
 
-        const milestone = await this.milestoneModel.findOne(
+        const task = await this.taskModel.findOne(
             {
                 _id: id
             }
         );
 
-        if (!milestone) {
+        if (!task) {
             throw new NotFoundException({
-                message: 'Milestone Not Found!',
+                message: 'Task Not Found!',
             })
         } else {
             return {
-                message: 'Milestone Found!',
-                data: milestone
+                message: 'Task Found!',
+                data: task
             }
         }
     }
 
-    async updateMilestone(id: string, description?: string, status?: string, progress?: number, startDate?: string, endDate?: string) {
+    async updateTask(id: string, description?: string, status?: string, progress?: number, startDate?: string, endDate?: string) {
         if (!id) {
             throw new BadRequestException(
                 {
@@ -105,18 +114,18 @@ export class MilestonesService {
             )
         }  
 
-        const milestone = await this.milestoneModel.findOne(
+        const task = await this.taskModel.findOne(
             {
                 _id: id
             }
         );
 
-        if (!milestone) {
+        if (!task) {
             throw new NotFoundException({
-                message: 'Milestone Not Found!',
+                message: 'Task Not Found!',
             })
         } else {
-            const updatedMilestone = await milestone.updateOne({
+            const updatedTask = await task.updateOne({
                 description,
                 status,
                 progress,
@@ -124,13 +133,13 @@ export class MilestonesService {
                 endDate
             });
             return {
-                message: 'Milestone Updated Successfully!',
-                data: updatedMilestone
+                message: 'Task Updated Successfully!',
+                data: updatedTask
             }
         }
     }
 
-    async deleteMilestone(id: string) {
+    async deleteTask(id: string) {
         if (!id) {
             throw new BadRequestException(
                 {
@@ -139,21 +148,21 @@ export class MilestonesService {
             );
         }
 
-        const milestone = await this.milestoneModel.findOne(
+        const task = await this.taskModel.findOne(
             {
                 _id: id
             }
         );
 
-        if (!milestone) {
+        if (!task) {
             throw new NotFoundException({
-                message: 'Milestone Not Found!',
+                message: 'Task Not Found!',
             });
         } else {
-            const deletedMilestone = await milestone.deleteOne();
+            const deletedTask = await task.deleteOne();
             return {
-                message: 'Milestone Deleted Successfully!',
-                data: deletedMilestone
+                message: 'Task Deleted Successfully!',
+                data: deletedTask
             }
         }
     }
