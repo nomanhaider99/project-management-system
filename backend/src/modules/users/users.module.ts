@@ -17,7 +17,7 @@ import { UserService } from "./users.service";
             ]
         ),
     ],
-    providers: [UserService],
+    providers: [UserService, AppConfigService],
     exports: [],
     controllers: [UsersController]
 })

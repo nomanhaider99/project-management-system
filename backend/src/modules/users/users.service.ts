@@ -5,10 +5,11 @@ import { hash, compare } from "bcryptjs";
 import { InjectModel } from "@nestjs/mongoose";
 import { sign } from 'jsonwebtoken';
 import { Response } from "express";
+import { AppConfigService } from "src/config/config.service";
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel(User.name) private userModel: Model<User>) { }
+    constructor(@InjectModel(User.name) private userModel: Model<User>, @Inject(AppConfigService) private appConfigService: AppConfigService) { }
     async createUser(username: string, email: string, password: string) {
         if (!username) {
             throw new BadRequestException(
@@ -201,14 +202,13 @@ export class UserService {
                     }
                 )
             } else {
-                // Generate Token
                 const token = sign(
                     {
                         _id: userExists._id,
                         email: userExists.email,
                         username: userExists.username
                     },
-                    'myprojectsecret', // TODO: Transfer to env
+                    this.appConfigService.jwtSecret
                 );
 
                 res.cookie('token', token);

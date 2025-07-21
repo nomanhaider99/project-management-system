@@ -12,4 +12,8 @@ export class AppConfigService {
     get databaseUrl (): string {
         return this.configService.get<string>('MONGODB_URI') as string;
     }
+
+    get jwtSecret (): string {
+        return this.configService.get<string>('JWT_SECRET') as string;
+    }
 }
