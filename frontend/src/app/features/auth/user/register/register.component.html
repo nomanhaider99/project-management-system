@@ -1,0 +1,61 @@
+<main class="w-full h-screen flex justify-between items-center">
+    <!-- FORM -->
+    <div class="md:w-1/2 w-full tracking-tight register flex justify-center items-center">
+        <!-- REGISTER -->
+        <div class="flex flex-col gap-4">
+            <!-- HEADER -->
+            <div class="flex flex-col gap-1">
+                <div class="text-white text-[2rem]">Be Our Partner</div>
+                <div class="text-zinc-300 text-[1rem]">Enter your credentials, or continue with social accounts.</div>
+            </div>
+            <!-- BODY -->
+            <div class="flex flex-col gap-3">
+                <div class="flex flex-col gap-2">
+                    <app-button [isPrimary]="true" text="Continue With Google"></app-button>
+                    <app-button [isPrimary]="true" text="Continue With Github"></app-button>
+                </div>
+                <!-- OR -->
+                <div class="flex justify-between items-center gap-1">
+                    <div class="h-[0.5px] w-1/2 bg-zinc-100/40"></div>
+                    <div class="text-white">OR</div>
+                    <div class="h-[0.5px] w-1/2 bg-zinc-100/40"></div>
+                </div>
+                <!-- CREDENTIALS -->
+                <div class="flex flex-col gap-6">
+                    <!-- INPUTs -->
+                    <form
+                        class="flex flex-col gap-4"
+                        (ngSubmit)="submitForm()"
+                    >
+                        <div class="flex flex-col gap-2">
+                            <!-- Username -->
+                            <div>
+                                <app-input [control]="getControl('username')"  placeholder="johndoe"></app-input>
+                            </div>
+                            <!-- email -->
+                            <div>
+                                <app-input [control]="getControl('email')"  placeholder="johndoe@john.com"></app-input>
+                            </div>
+                            <!-- Password -->
+                            <div>
+                                <app-password-input [control]="getControl('password')" placeholder="**********" type="password"></app-password-input>
+                            </div>
+                        </div>
+                        <!-- BUTTON -->
+                        <div>
+                            <app-button [type]="'submit'" text="Register"></app-button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- FOOTER -->
+            <div class="text-zinc-200">If your have already join us? <a href="/user/login"
+                    class="text-blue-500 font-medium cursor-pointer hover:underline">Login Here</a></div>
+        </div>
+    </div>
+    <!-- SIDE -->
+    <div class="w-1/2 hero h-[90%] border-l-[1px] border-zinc-400/20 md:flex hidden justify-center items-center">
+        <div class="text-[8rem] font-semibold text-white leading-none text-center">Join Our Platform to Unlock an <span
+                class="text-cyan-500">Experience</span></div>
+    </div>
+</main>
