@@ -38,15 +38,24 @@ export class AddTaskComponent {
     const data = {
       title: this.title?.value,
       description: this.description?.value,
-      milestone: '',
+      milestone: this.milestone,
       project: this.project
     }
     if (this.title?.value == '' || this.description?.value == '') {
       this.type = 'error';
       this.message = 'Missing Input Field Values!'
     } else {
-      // this.tasksService.createTask(data.title, data.description, data.project, data.milestone);
-      console.log(data);
+      this.tasksService.createTask(data.title, data.description, data.project, data.milestone)
+      .subscribe({
+        next: (res) => {
+          this.type = 'success';
+          this.message = 'Task Created Successfully!'
+        },
+        error: (err) => {
+          this.type = 'error';
+          this.message = err;
+        }
+      })
     }
   }
 }

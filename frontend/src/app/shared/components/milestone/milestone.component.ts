@@ -7,36 +7,31 @@ import { TaskType } from 'src/app/core/types/tasks.types';
   templateUrl: './milestone.component.html',
   styleUrls: ['./milestone.component.css']
 })
-export class MilestoneComponent implements OnInit, OnChanges {
+export class MilestoneComponent implements OnInit {
   @Input() status: any;
   @Input() title: string = '';
   @Input() description: string = '';
   @Input() mielstoneNo: number = 1;
   @Input() milestone: string = '';
   @Input() project: string = '';
-  @Input() projectId: any = '';
-  @Input() milestoneId: any = '';
   @Input() tasks: TaskType[] = [];
   tasksService: TasksService = inject(TasksService);
-  @Output() addTaskEmmiter = new EventEmitter<any>();
-  @Input() addTaskValueToBeEmmited: any;
+  @Output() addTaskEmmiter = new EventEmitter<{comp: string, project: string, milestone: string}>();
 
-  value = {
-    comp: 'view',
-    project: this.project,
-    milestone: this.milestoneId
-  }
-
-
-  onAddTaskClick (value: any) {
-    this.addTaskEmmiter.emit(value);
+  onAddTaskClick () {
+    this.addTaskEmmiter.emit({
+      comp: 'add-task',
+      project: this.project,
+      milestone: this.milestone
+    });
   }
 
   fetchTasksOfMilestone () {
-    this.tasksService.getTasksOfMilestone('68812f55f86f2829bbe494d8', '68823843204b0a6e7b785c0a')
+    this.tasksService.getTasksOfMilestone(this.milestone, this.project)
     .subscribe({
       next: (res: any) => {
         this.tasks = res.data
+        console.log(this.tasks);
       },
       error: (err) => {
         console.log(err);
@@ -44,11 +39,8 @@ export class MilestoneComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    this.fetchTasksOfMilestone();
-  }
-
   ngOnInit(): void {
     this.fetchTasksOfMilestone();
+    console.log(this.milestone, this.project);
   }
 }

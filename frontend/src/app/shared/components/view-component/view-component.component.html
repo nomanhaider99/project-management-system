@@ -49,6 +49,7 @@
                 [milestone]="milestone._id"
                 [project]="milestone.project"
                 [mielstoneNo]="i+1"
+                (addTaskEmmiter)="ControlAddTaskButtonClick($event)"
             ></app-milestone>
         </div>
     </div>

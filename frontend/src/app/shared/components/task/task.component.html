@@ -1,4 +1,14 @@
 <div class="w-full flex justify-between items-center gap-4 bg-zinc-800/50 rounded-md p-2">
+    <div [ngClass]="{
+                    'hidden': message == '',
+                    'block': message != '',
+                    'w-[300px]': true
+                }">
+                <app-result
+                    [message]="message" 
+                    [type]="type"
+                ></app-result>
+            </div>
     <div class="flex">
         <div class="px-4 flex justify-center items-center text-zinc-100 text-[1rem]">
             <div
@@ -14,6 +24,7 @@
         <app-button
             text="Delete"
             [isPrimary]="true"
+            (clickEvent)="onDeleteTaskClick()"
         ></app-button>
     </div>
 </div>

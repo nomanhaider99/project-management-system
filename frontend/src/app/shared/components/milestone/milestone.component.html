@@ -26,8 +26,7 @@
                 <app-button
                     text="Add Task" 
                     [isPrimary]="false"
-                    (clickEvent)="onAddTaskClick($event)"
-                    [valueToBeEmmited]="addTaskValueToBeEmmited"
+                    (clickEvent)="onAddTaskClick()"
                 ></app-button>
             </div>
         </div>
@@ -44,7 +43,7 @@
             class="flex flex-col gap-2"
         >
             <app-task *ngFor="let task of tasks; index as i" [taskNo]="i+1   " [title]="task.title"
-                [description]="task.description"></app-task>
+                [description]="task.description" [taskId]="task._id"></app-task>
         </div>
         <div
             *ngIf="tasks.length == 0"

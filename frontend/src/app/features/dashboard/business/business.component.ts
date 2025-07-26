@@ -13,6 +13,7 @@ export class BusinessDashboardComponent implements OnInit {
   component: string = 'projects';
   business: any;
   projectId: string = '';
+  milestoneId: string = '';
 
   onTabClick(comp: string): any {
     this.component = comp;
@@ -21,6 +22,8 @@ export class BusinessDashboardComponent implements OnInit {
 
   controlAddTaskClick (value: any) {
     this.component = value.comp;
+    this.milestoneId = value.milestone;
+    console.log(value);
   }
 
   getViewClick (value: any) {

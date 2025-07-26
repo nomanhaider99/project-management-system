@@ -13,8 +13,11 @@ export class TasksService {
         return this.http.post(`${environments.API_BASE_URL}/tasks/create-task`, data);
     }
 
+    deleteTask (id: string) {
+        return this.http.delete(`${environments.API_BASE_URL}/tasks/delete-task/${id}`);
+    }
+
     getTasksOfMilestone(milestone: string, project: string) {
-        const data = { milestone }
-        return this.http.get(`${environments.API_BASE_URL}/tasks/get-tasks/68812f55f86f2829bbe494d8/68823843204b0a6e7b785c0a`);
+        return this.http.get(`${environments.API_BASE_URL}/tasks/get-tasks/${project}/${milestone}`);
     }
 }

@@ -22,6 +22,7 @@ export class ViewProjectComponent implements OnInit {
   members: UserType[] = [];
   @Output() controlCreateMilestone = new EventEmitter<{ comp: string, projectId: string }>();
   @Output() controlAddMember = new EventEmitter<{ comp: string, projectId: string }>();
+  @Output() controlAddTask = new EventEmitter<{ comp: string, projectId: string, milestone: string }>();
 
   valueToBeEmit = {
     comp: 'create-milestone',
@@ -35,10 +36,16 @@ export class ViewProjectComponent implements OnInit {
 
   ControlMilestoneCreationButtonClick(value: any) {
     this.controlCreateMilestone.emit(value);
+    console.log(value);
   }
 
   ControlAddMemberButtonClick(value: any) {
     this.controlAddMember.emit(value);
+    console.log(value);
+  }
+
+  ControlAddTaskButtonClick(value: any) {
+    this.controlAddTask.emit(value);
   }
 
   getCurrentOpenedProject() {

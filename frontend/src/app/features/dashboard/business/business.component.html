@@ -52,6 +52,7 @@
                 [projectId]="projectId"
                 (controlCreateMilestone)="getMilestoneClickFunc($event)"
                 (controlAddMember)="getAddMemberClickFunc($event)"
+                (controlAddTask)="controlAddTaskClick($event)"
             ></app-view-component>
         </div>
         <div *ngIf="component == 'create-milestone'">
@@ -67,6 +68,7 @@
         <div *ngIf="component == 'add-task'">
             <app-add-task
                 [project]="projectId"
+                [milestone]="milestoneId"
             ></app-add-task>
         </div>
     </div>
