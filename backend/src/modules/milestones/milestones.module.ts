@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { Business, BusinessSchema } from "src/modules/businesses/business.models";
 import { Milestone, MilestoneSchema } from "src/modules/milestones/milestone.models";
 import { MilestonesController } from "./milestones.controller";
 import { MilestonesService } from "./milestones.service";
+import { Project, ProjectSchema } from "../projects/project.models";
 
 @Module({
     imports: [
@@ -12,6 +12,10 @@ import { MilestonesService } from "./milestones.service";
                 {
                     name: Milestone.name,
                     schema: MilestoneSchema
+                },
+                {
+                    name: Project.name,
+                    schema: ProjectSchema
                 }
             ]
         ),
@@ -21,4 +25,4 @@ import { MilestonesService } from "./milestones.service";
     providers: [MilestonesService]
 })
 
-export class MilestoneModule {}
+export class MilestoneModule { }

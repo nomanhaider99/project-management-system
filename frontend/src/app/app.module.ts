@@ -15,10 +15,15 @@ import { BusinessLoginModule } from './features/auth/business/login/login.module
 import { BusinessRegisterModule } from './features/auth/business/register/register.module';
 import { OnBoardingBusinessModule } from './features/onboarding/business/business.module';
 import { OnBoardingUserModule } from './features/onboarding/user/user.module';
+import { HttpClientModule } from '@angular/common/http';
+import { UserDashboardModule } from './features/dashboard/user/user.module';
+import { CreateProjectModule } from './shared/components/create-project/create-project.module';
+import { BusinessDashboardModule } from './features/dashboard/business/business.module';
+import { AddTaskComponent } from './shared/components/add-task/add-task.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +42,11 @@ import { OnBoardingUserModule } from './features/onboarding/user/user.module';
     BusinessLoginModule,
     BusinessRegisterModule,
     OnBoardingBusinessModule,
-    OnBoardingUserModule
+    OnBoardingUserModule,
+    HttpClientModule,
+    UserDashboardModule,
+    BusinessDashboardModule,
+    CreateProjectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,12 +1,12 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Business } from '../businesses/business.models';
 import { Milestone } from './milestone.models';
+import { Project } from '../projects/project.models';
 
 @Injectable()
 export class MilestonesService {
-    constructor(@InjectModel(Milestone.name) private milestoneModel: Model<Milestone>) { }
+    constructor(@InjectModel(Milestone.name) private milestoneModel: Model<Milestone>, @InjectModel(Project.name) private projectModel: Model<Project>) { }
 
     async createMilestone(title: string, project: string, description?: string) {
         if (!title) {
@@ -45,6 +45,12 @@ export class MilestonesService {
                 }
             );
 
+            await this.projectModel.findByIdAndUpdate(project, {
+                $addToSet: {
+                    milestones: createdMilestone._id
+                }
+            })
+
             return {
                 message: 'Milestone Created Successfully!',
                 data: createdMilestone
@@ -59,6 +65,24 @@ export class MilestonesService {
                 {
                     message: 'Milestones Not Found!',
                     data: null
+                }
+            )
+        } else {
+            return {
+                message: 'Milestones Found!',
+                data: milestones
+            }
+        }
+    }
+
+    async getMilestonesOfProject(project: string) {
+        const milestones = await this.milestoneModel.find({
+            project: project
+        });
+        if (!milestones.length) {
+            throw new NotFoundException(
+                {
+                    message: 'Milestones Not Found!'
                 }
             )
         } else {
@@ -96,14 +120,14 @@ export class MilestonesService {
         }
     }
 
-    async updateMilestone(id: string, description?: string, status?: string, progress?: number, startDate?: string, endDate?: string) {
+    async updateMilestone(id: string, description?: string, status?: string) {
         if (!id) {
             throw new BadRequestException(
                 {
                     message: 'Invalid Id!',
                 }
             )
-        }  
+        }
 
         const milestone = await this.milestoneModel.findOne(
             {
@@ -118,10 +142,7 @@ export class MilestonesService {
         } else {
             const updatedMilestone = await milestone.updateOne({
                 description,
-                status,
-                progress,
-                startDate,
-                endDate
+                status
             });
             return {
                 message: 'Milestone Updated Successfully!',

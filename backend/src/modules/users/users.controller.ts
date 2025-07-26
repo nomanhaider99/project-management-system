@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Res } from '@nestjs/common';
-import { Response } from 'express';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { UserService } from './users.service';
 
 @Controller('/api/v1/users')
@@ -27,6 +27,14 @@ export class UsersController {
         response.json(user);
     }
 
+    @Post('get-users-by-ids')
+    async getUsersByIds (@Res() response: Response, @Body() body) {
+        const { ids } = body;
+        const user = await this.userService.getUsersByIds(ids)
+        
+        response.json(user);
+    }
+
     @Patch('update-user/:id')
     async updateUserById (@Body() body, @Param() params, @Res() response: Response) {
         const { id } = params;
@@ -42,10 +50,28 @@ export class UsersController {
         response.json(user);
     }
 
-    @Get('/login-user/:email/:password')
-    async loginUser (@Param() params, @Res() response: Response) {
-        const { email, password } = params;
+    @Post('/login-user')
+    async loginUser (@Body() body, @Res() response: Response) {
+        const { email, password } = body;
         const user = await this.userService.loginUser(email, password, response);
+        response.json(user);
+    }
+
+    @Get('/get-loggedin-user')
+    async getLoggedInUser (@Req() request: Request, @Res() response: Response) {
+        const user = await this.userService.getLoggedInUser(request);
+        response.json(user);
+    }
+
+    @Get('/logout-user')
+    async logoutUser (@Req() request: Request, @Res() response: Response) {
+        const user = await this.userService.logoutUser(request, response);
+        response.json(user);
+    }
+
+    @Get('/is-loggedin')
+    async isLoggedIn (@Req() request: Request, @Res() response: Response) {
+        const user = await this.userService.isLoggedIn(request);
         response.json(user);
     }
 }

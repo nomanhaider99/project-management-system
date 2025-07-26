@@ -8,6 +8,6 @@ import { FormControl } from '@angular/forms';
 })
 export class InputComponent {
   @Input() placeholder: string = "";
-  @Input() type: string = "text";
+  @Input() type: "text" | "date" = "text";
   @Input() control: FormControl = new FormControl();
 }

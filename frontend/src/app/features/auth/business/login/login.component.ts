@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { BusinessService } from 'src/app/core/services/business/business.service';
 
 @Component({
   selector: 'app-login',
@@ -8,19 +10,56 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 })
 export class BusinessLoginComponent {
   form: FormGroup
-  
-  constructor (private fb: FormBuilder) {
+  businessService: BusinessService = inject(BusinessService);
+  type: 'success' | 'error' = 'success';
+  message: string = '';
+  router: Router = inject(Router);
+
+  constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      email: [''],
-      password: ['']
-    }) 
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]]
+    })
   }
 
-  getControl (name: string) {
+  get email() {
+    return this.form.get('email');
+  }
+
+  get password() {
+    return this.form.get('password');
+  }
+
+  getControl(name: string) {
     return this.form.get(name) as FormControl;
   }
 
-  submitForm () {
-    console.log(this.form.value);
+  submitForm() {
+    if (this.email?.value == '' || this.password?.value == '') {
+      this.type = 'error'
+      this.message = 'Kindly fill your credentials, we are getting empty credentials.'
+    } else {
+      this.businessService.loginBusiness(this.email?.value, this.password?.value)
+        .subscribe({
+          next: (res) => {
+            this.type = "success";
+            this.message = res.message;
+            if (!res.data.tagline && !res.data.description && !res.data.address) {
+              setTimeout(() => {
+                this.router.navigateByUrl('/business/onboarding');
+              }, 500)
+            } else {
+              setTimeout(() => {
+                this.router.navigateByUrl('/business/dashboard');
+              }, 500)
+            }
+
+          },
+          error: (err) => {
+            this.type = "error";
+            this.message = err.error.message
+          }
+        })
+    }
   }
 }

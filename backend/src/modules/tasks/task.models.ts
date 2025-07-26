@@ -6,10 +6,10 @@ import { Milestone } from '../milestones/milestone.models';
 
 @Schema()
 export class Task {
-    @Prop({ required: true, min: [2, 'task title must be at least of 2 charachters.'], max: [80, 'task title must not be more than 80 charachters.'] })
+    @Prop({ required: true, minlength: [6, 'task title must be at least of 6 charachters.'], maxlength: [25, 'task title must not be more than 25 charachters.'] })
     title: string
 
-    @Prop({ required: false, min: [30, 'description must be at least of 30 charachters.'] })
+    @Prop({ required: false, minlength: [30, 'description must be at least of 30 charachters.'], maxlength: [100, 'description must not be more than 100 charachters.'] })
     description?: string
 
     @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "Project" })
@@ -17,18 +17,6 @@ export class Task {
 
     @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "Milestone" })
     milestone: Milestone 
-
-    @Prop({ required: false })
-    status?: "ongoing" | "completed"
-
-    @Prop({ required: false })
-    progress: number
-
-    @Prop({ required: false })
-    startDate: Date
-
-    @Prop({ required: false })
-    endDate: Date
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

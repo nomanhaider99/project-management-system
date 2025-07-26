@@ -13,11 +13,10 @@ export class TasksController {
         response.json(task);
     }
 
-    @Get('get-tasks/:id')
+    @Get('get-tasks/:project/:milestone')
     async getTasksOfMilestone(@Body() body, @Res() response: Response, @Param() params) {
-        const { id } = params;
-        const { milestone } = body;
-        const task = await this.taskService.getTasksOfMilestoneOfProject(milestone, id);
+        const { project, milestone } = params;
+        const task = await this.taskService.getTasksOfMilestoneOfProject(milestone, project);
         response.json(task);
     }
 
@@ -31,8 +30,8 @@ export class TasksController {
     @Patch('update-task/:id')
     async updateMilestoneById(@Body() body, @Param() params, @Res() response: Response) {
         const { id } = params;
-        const { description, status, progress, startDate, endDate } = body;
-        const milestone = await this.taskService.updateTask(id, description, status, progress, startDate, endDate);
+        const { description } = body;
+        const milestone = await this.taskService.updateTask(id, description);
         response.json(milestone);
     }
 

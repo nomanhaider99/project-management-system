@@ -3,6 +3,7 @@ import { BusinessService } from "./business.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Business, BusinessSchema } from "./business.models";
 import { BusinessController } from "./business.controller";
+import { AppConfigService } from "src/config/config.service";
 
 @Module({
     imports: [
@@ -15,7 +16,7 @@ import { BusinessController } from "./business.controller";
             ]
         )
     ],
-    providers: [BusinessService],
+    providers: [BusinessService, AppConfigService],
     exports: [],
     controllers: [BusinessController]
 })

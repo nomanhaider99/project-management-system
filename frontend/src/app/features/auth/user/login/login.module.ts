@@ -6,20 +6,22 @@ import { InputModule } from "src/app/shared/components/input/input.module";
 import { PasswordInputModule } from "../../password-input/password-input.module";
 import { LoginComponent } from "./login.component";
 import { BrowserModule } from "@angular/platform-browser";
+import { ResultModule } from "src/app/shared/components/result/result.module";
 
 @NgModule({
     declarations: [
         LoginComponent
     ],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        BrowserModule,
-        ButtonModule, 
-        InputModule, 
-        PasswordInputModule,
-        FormsModule
-    ],
+    CommonModule,
+    ReactiveFormsModule,
+    BrowserModule,
+    ButtonModule,
+    InputModule,
+    PasswordInputModule,
+    FormsModule,
+    ResultModule
+],
     providers: [
         FormControl
     ],

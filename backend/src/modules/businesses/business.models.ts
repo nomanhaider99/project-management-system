@@ -9,7 +9,7 @@ export class Business {
     @Prop({ required: true, unique: true })
     email: string
 
-    @Prop({ required: true, unique: true, min: [8, 'password must be at least of 8 charachters.'], max: [30, 'password must not be more than 30 charachters.'] })
+    @Prop({ required: true, unique: true, min: [8, 'password must be at least of 8 charachters.'] })
     password: string
 
     @Prop({ required: false })
@@ -18,16 +18,16 @@ export class Business {
     @Prop({ required: false })
     logo?: string
 
-    @Prop({ required: false, min: [15, 'tagline must be at least of 15 charachters.'], max: [120, 'tagline must not be more than 120 charachters.'] })
+    @Prop({ required: false, minlength: [15, 'tagline must be at least of 15 charachters.'], maxlength: [80, 'tagline must not be more than 80 charachters.'] })
     tagline?: string
 
-    @Prop({ required: false, min: [30, 'description must be at least of 30 charachters.'] })
+    @Prop({ required: false, minlength: [30, 'description must be at least of 30 charachters.'], maxlength: [600, 'description must not be more than 600 charachters.'] })
     description?: string
 
     @Prop({ required: false })
     industry?: string
 
-    @Prop({ required: false, min: [10, 'address must be at least of 10 charachters.'], max: [150, 'address must not be more than 150 charachters.'] })
+    @Prop({ required: false, min: [15, 'address must be at least of 15 charachters.'], max: [150, 'address must not be more than 150 charachters.'] })
     address?: string
 
     @Prop({ required: false, type: [{type: mongoose.Schema.Types.ObjectId, ref: "Project"}] })

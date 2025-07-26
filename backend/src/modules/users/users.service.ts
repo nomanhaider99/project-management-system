@@ -1,17 +1,17 @@
 import { BadRequestException, ForbiddenException, HttpStatus, Inject, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
-import { Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import { User } from "./user.models";
 import { hash, compare } from "bcryptjs";
 import { InjectModel } from "@nestjs/mongoose";
-import { sign } from 'jsonwebtoken';
-import { Response } from "express";
+import { sign, verify } from 'jsonwebtoken';
+import { Request, Response } from "express";
 import { AppConfigService } from "src/config/config.service";
 
 @Injectable()
 export class UserService {
     constructor(@InjectModel(User.name) private userModel: Model<User>, @Inject(AppConfigService) private appConfigService: AppConfigService) { }
     async createUser(username: string, email: string, password: string) {
-        if (!username) {
+        if (!username || username.length < 6 || username.length > 24) {
             throw new BadRequestException(
                 {
                     message: 'Invalid Username',
@@ -23,7 +23,7 @@ export class UserService {
                     message: 'Invalid Email',
                 }
             )
-        } else if (!password) {
+        } else if (!password || password.length < 8) {
             throw new BadRequestException(
                 {
                     message: 'Invalid Password',
@@ -31,18 +31,28 @@ export class UserService {
             )
         }
 
-        const userExists = await this.userModel.findOne(
+        const userExistsByEmail = await this.userModel.findOne(
             {
-                email,
+                email
+            }
+        );
+
+        const userExistsByUsername = await this.userModel.findOne(
+            {
                 username
             }
         );
 
-        if (userExists) {
+        if (userExistsByEmail) {
             throw new ForbiddenException(
                 {
-                    message: 'User Already Exists!',
-                    data: userExists
+                    message: 'User Already Exists!'
+                }
+            )
+        } else if (userExistsByUsername) {
+            throw new ForbiddenException(
+                {
+                    message: 'User Already Exists!'
                 }
             )
         } else {
@@ -56,8 +66,7 @@ export class UserService {
             );
 
             return {
-                message: 'User Created Successfully!',
-                data: createdUser
+                message: 'User Created Successfully!'
             }
         }
     }
@@ -103,6 +112,76 @@ export class UserService {
                 message: 'User Found!',
                 data: user
             }
+        }
+    }
+
+    async getUsersByIds(ids: string[]) {
+        if (!ids) {
+            throw new BadRequestException(
+                {
+                    message: 'Invalid Ids!',
+                }
+            )
+        }
+
+        const user = await this.userModel.find(
+            {
+                _id: {
+                    $in: ids
+                }
+            }
+        );
+
+        if (!user) {
+            throw new NotFoundException({
+                message: 'User Not Found!',
+            })
+        } else {
+            return {
+                message: 'User Found!',
+                data: user
+            }
+        }
+    }
+
+    async isLoggedIn (request: Request) {
+        const token = request.cookies.token;
+        if (!token) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    async getLoggedInUser(request: Request) {
+        const token = request.cookies.token
+        if (token === undefined) {
+            throw new BadRequestException(
+                {
+                    message: 'Token Not Found!'
+                }
+            )
+        }
+        const decodedToken: any = verify(token, this.appConfigService.jwtSecret);
+        const tokenData = {
+            _id: decodedToken._id,
+            email: decodedToken.email,
+            username: decodedToken.username
+        }
+
+        const user = await this.userModel.findOne({
+            email: tokenData.email,
+            username: tokenData.username,
+        });
+
+        if (!user) {
+            throw new NotFoundException(
+                {
+                    message: 'User Not Found!'
+                }
+            )
+        } else {
+            return { data: user };
         }
     }
 
@@ -174,7 +253,7 @@ export class UserService {
                     message: 'Invalid Email'
                 }
             )
-        } else if (!password) {
+        } else if (!password || password.length < 8) {
             throw new BadRequestException(
                 {
                     message: 'Invalid Password'
@@ -206,13 +285,19 @@ export class UserService {
                     {
                         _id: userExists._id,
                         email: userExists.email,
-                        username: userExists.username
+                        username: userExists.username,
+                        type: 'user'
                     },
                     this.appConfigService.jwtSecret
                 );
 
-                res.cookie('token', token);
-                
+                res.cookie('token', token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'lax',
+                    maxAge: 1000 * 60 * 60 * 24
+                });
+
                 return {
                     message: 'User LoggedIn Successfully!',
                     data: userExists
@@ -220,5 +305,21 @@ export class UserService {
             }
         }
     }
-    async verifyUser() { } // TODO: Verify Using Email
+
+    async logoutUser(request: Request, response: Response) {
+        const token = request.cookies.token;
+        if (!token) {
+            throw new NotFoundException(
+                {
+                    message: 'Token Not Found!'
+                }
+            );
+        } else {
+            response.clearCookie('token');
+
+            return {
+                message: 'User Logged Out!'
+            }
+        }
+    } 
 }

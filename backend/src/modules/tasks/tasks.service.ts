@@ -60,8 +60,10 @@ export class TasksService {
 
     async getTasksOfMilestoneOfProject(milestone: string, project: string) {
         const tasks = await this.taskModel.find({
-            milestone,
-            project
+            $and: [
+                { milestone: milestone },
+                { project: project },
+            ]
         });
         if (!tasks.length) {
             throw new NotFoundException(
@@ -105,7 +107,7 @@ export class TasksService {
         }
     }
 
-    async updateTask(id: string, description?: string, status?: string, progress?: number, startDate?: string, endDate?: string) {
+    async updateTask(id: string, description?: string) {
         if (!id) {
             throw new BadRequestException(
                 {
@@ -126,11 +128,7 @@ export class TasksService {
             })
         } else {
             const updatedTask = await task.updateOne({
-                description,
-                status,
-                progress,
-                startDate,
-                endDate
+                description
             });
             return {
                 message: 'Task Updated Successfully!',

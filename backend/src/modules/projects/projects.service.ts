@@ -3,19 +3,20 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Business } from "src/modules/businesses/business.models";
 import { Project } from "./project.models";
+import { User } from "../users/user.models";
 
 @Injectable()
 export class ProjectService {
-    constructor(@InjectModel(Project.name) private projectModel: Model<Project>, @InjectModel(Business.name) private businessModel: Model<Business>) { }
+    constructor(@InjectModel(Project.name) private projectModel: Model<Project>, @InjectModel(Business.name) private businessModel: Model<Business>, @InjectModel(User.name) private userModel: Model<User>) { }
 
-    async createProject(title: string, description: string, owner: Business) {
-        if (!title) {
+    async createProject(title: string, description: string, owner: Business, status: 'ongoing' | 'completed' | 'expired', priority: 'low' | 'medium' | 'urgent', startDate: string) {
+        if (!title || title.length < 6 || title.length > 25) {
             throw new BadRequestException(
                 {
                     message: 'Invalid Title!'
                 }
             )
-        } else if (!description) {
+        } else if (!description || description.length < 30 || description.length > 100) {
             throw new BadRequestException(
                 {
                     message: 'Invalid Description!'
@@ -25,6 +26,24 @@ export class ProjectService {
             throw new BadRequestException(
                 {
                     message: 'Invalid Business!'
+                }
+            )
+        } else if (!status) {
+            throw new BadRequestException(
+                {
+                    message: 'Invalid Status!'
+                }
+            )
+        } else if (!priority) {
+            throw new BadRequestException(
+                {
+                    message: 'Invalid Priority!'
+                }
+            )
+        } else if (!startDate) {
+            throw new BadRequestException(
+                {
+                    message: 'Invalid startDate!'
                 }
             )
         }
@@ -46,7 +65,11 @@ export class ProjectService {
                 {
                     title,
                     description,
-                    owner
+                    owner,
+                    status,
+                    priority,
+                    startDate,
+                    progress: 0
                 }
             );
 
@@ -62,9 +85,28 @@ export class ProjectService {
             }
         }
     }
-    
+
     async getProjectsOfBusiness(id: string) {
         const projects = await this.projectModel.find({ owner: id });
+        if (!projects.length) {
+            throw new NotFoundException(
+                {
+                    message: 'Projects Not Found!',
+                    data: null
+                }
+            )
+        } else {
+            return {
+                message: 'Projects Found!',
+                data: projects
+            }
+        }
+    }
+
+    async getProjectsOfUser(id: string) {
+        const projects = await this.projectModel.find({
+            members: id
+        });
         if (!projects.length) {
             throw new NotFoundException(
                 {
@@ -112,6 +154,18 @@ export class ProjectService {
             throw new BadRequestException(
                 {
                     message: 'Invalid Id!',
+                }
+            )
+        } else if (status != 'completed' && status != 'ongoing' && status != 'expired') {
+            throw new BadRequestException(
+                {
+                    message: 'Invalid Status!',
+                }
+            )
+        } else if (priority != 'low' && priority != 'medium' && priority != 'urgent') {
+            throw new BadRequestException(
+                {
+                    message: 'Invalid Priority!',
                 }
             )
         }
@@ -168,10 +222,64 @@ export class ProjectService {
                 $addToSet: {
                     members: member
                 }
+            });
+            await this.userModel.findByIdAndUpdate(member, {
+                $addToSet: {
+                    projects: project._id
+                }
             })
             return {
                 message: 'Member Added Successfully!',
                 data: updatedProjectWithAddedMembers
+            }
+        }
+    }
+
+    async addMemberThroughUsername(id: string, username: string) {
+        if (!id) {
+            throw new BadRequestException(
+                {
+                    message: 'Invalid Id!',
+                }
+            )
+        }
+
+        const project = await this.projectModel.findOne(
+            {
+                _id: id
+            }
+        );
+
+        if (!project) {
+            throw new NotFoundException({
+                message: 'Project Not Found!',
+            });
+        } else {
+            const user = await this.userModel.findOne({
+                username
+            });
+
+            if (!user) {
+                throw new NotFoundException(
+                    {
+                        message: 'User with this username doesnot exists!'
+                    }
+                )
+            } else {
+                const updatedProjectWithAddedMembers = await project.updateOne({
+                    $addToSet: {
+                        members: user._id
+                    }
+                });
+                await this.userModel.findByIdAndUpdate(user._id, {
+                    $addToSet: {
+                        projects: project._id
+                    }
+                })
+                return {
+                    message: 'Member Added Successfully!',
+                    data: updatedProjectWithAddedMembers
+                }
             }
         }
     }

@@ -6,18 +6,22 @@ import { BrowserModule } from "@angular/platform-browser";
 import { ButtonModule } from "src/app/shared/components/button/button.module";
 import { RegisterComponent } from "./register.component";
 import { InputModule } from "src/app/shared/components/input/input.module";
+import { ErrorComponent } from "src/app/shared/components/error/error.component";
+import { ResultModule } from "src/app/shared/components/result/result.module";
 
 @NgModule({
     imports: [
-        PasswordInputModule,
-        FormsModule,
-        CommonModule,
-        BrowserModule,
-        ReactiveFormsModule,
-        ButtonModule,
-        InputModule, 
-        PasswordInputModule,
-    ],
+    PasswordInputModule,
+    FormsModule,
+    CommonModule,
+    BrowserModule,
+    ReactiveFormsModule,
+    ButtonModule,
+    InputModule,
+    PasswordInputModule,
+    ErrorComponent,
+    ResultModule,
+],
     providers: [],
     exports: [
         RegisterComponent

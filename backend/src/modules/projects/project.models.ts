@@ -1,14 +1,13 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Business } from '../businesses/business.models';
-import { User } from '../users/user.models';
 
 @Schema()
 export class Project {
-    @Prop({ required: true, min: [2, 'project title must be at least of 2 charachters.'], max: [80, 'project title must not be more than 80 charachters.'] })
+    @Prop({ required: true, minlength: [6, 'project title must be at least of 6 charachters.'], maxlength: [25, 'project title must not be more than 25 charachters.'] })
     title: string
 
-    @Prop({ required: true, min: [30, 'description must be at least of 30 charachters.'] })
+    @Prop({ required: true, minlength: [30, 'description must be at least of 30 charachters.'], maxlength: [100, 'description must be at least of 100 charachters.'] })
     description?: string
 
     @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "Business" })
@@ -16,6 +15,9 @@ export class Project {
 
     @Prop({ required: false, type: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}] })
     members?: mongoose.Schema.Types.ObjectId[]
+
+    @Prop({ required: false, type: [{type: mongoose.Schema.Types.ObjectId, ref: "Milestone"}] })
+    milestones?: mongoose.Schema.Types.ObjectId[]
 
     @Prop({ required: false })
     status?: "ongoing" | "completed" | "expired"
@@ -26,7 +28,7 @@ export class Project {
     @Prop({ required: false })
     progress: number
 
-    @Prop({ required: false })
+    @Prop({ required: false, type: Date })
     startDate: Date
 
     @Prop({ required: false })

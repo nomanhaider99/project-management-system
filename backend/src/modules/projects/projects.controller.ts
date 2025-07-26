@@ -8,8 +8,8 @@ export class ProjectsController {
     @Post('create-project')
     @HttpCode(200)
     async registerProject(@Body() body, @Res() response: Response) {
-        const { title, description, owner } = body;
-        const project = await this.projectService.createProject(title, description, owner);
+        const { title, description, owner, status, priority, startDate } = body;
+        const project = await this.projectService.createProject(title, description, owner, status, priority, startDate);
         response.json(project);
     }
 
@@ -17,6 +17,13 @@ export class ProjectsController {
     async getAllProjects(@Res() response: Response, @Param() params) {
         const { id } = params;
         const project = await this.projectService.getProjectsOfBusiness(id);
+        response.json(project);
+    }
+
+    @Get('get-projects-of-user/:id')
+    async getProjectsOfUser(@Res() response: Response, @Param() params) {
+        const { id } = params;
+        const project = await this.projectService.getProjectsOfUser(id);
         response.json(project);
     }
 
@@ -40,6 +47,14 @@ export class ProjectsController {
         const { id } = params;
         const { member } = body;
         const project = await this.projectService.addMembers(id, member);
+        response.json(project);
+    }
+
+    @Patch('add-member-by-username/:id')
+    async addMembersByUsername(@Body() body, @Param() params, @Res() response: Response) {
+        const { id } = params;
+        const { username } = body;
+        const project = await this.projectService.addMemberThroughUsername(id, username);
         response.json(project);
     }
 

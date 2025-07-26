@@ -8,27 +8,40 @@ import { BusinessLoginComponent } from './features/auth/business/login/login.com
 import { BusinessRegisterComponent } from './features/auth/business/register/register.component';
 import { OnBoardingBusinessComponent } from './features/onboarding/business/business.component';
 import { OnBoardingUserComponent } from './features/onboarding/user/user.component';
+import { UserDashboardComponent } from './features/dashboard/user/user.component';
+import { BusinessDashboardComponent } from './features/dashboard/business/business.component';
+import { userAuthGuard } from './core/guards/auth/user/user-auth.guard';
+import { businessAuthGuard } from './core/guards/auth/business/business-auth.guard';
+import { userUnauthGuard } from './core/guards/unauth/user/user-unauth.guard';
+import { businessUnauthGuard } from './core/guards/unauth/business/business-unauth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: LandingComponent
+    component: LandingComponent,
+    pathMatch: 'full',
   },
   {
     path: 'user/register',
     component: RegisterComponent,
+    pathMatch: 'full',
   },
   {
     path: 'user/login',
     component: LoginComponent,
+    pathMatch: 'full',
   },
   {
     path: 'user/onboarding',
     component: OnBoardingUserComponent,
+    pathMatch: 'full',
+    canActivate: [userAuthGuard]
   },
   {
     path: 'user/dashboard',
-    component: OnBoardingUserComponent,
+    component: UserDashboardComponent,
+    pathMatch: 'full',
+    canActivate: [userAuthGuard],
   },
   {
     path: 'business/register',
@@ -37,14 +50,17 @@ const routes: Routes = [
   {
     path: 'business/login',
     component: BusinessLoginComponent,
+    pathMatch: 'full',
   },
   {
     path: 'business/onboarding',
     component: OnBoardingBusinessComponent,
+    canActivate: [businessAuthGuard]
   },
   {
     path: 'business/dashboard',
-    component: OnBoardingUserComponent,
+    component: BusinessDashboardComponent,
+    canActivate: [businessAuthGuard]
   },
   {
     path: 'why',

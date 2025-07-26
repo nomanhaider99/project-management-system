@@ -27,11 +27,19 @@ export class MilestonesController {
         response.json(milestone);
     }
 
+    @Get('get-milestone-of-project/:project')
+    async getMilestoneOfAProject(@Res() response: Response, @Param() params) {
+        const { project } = params;
+        const milestone = await this.milestoneService.getMilestonesOfProject(project);
+
+        response.json(milestone);
+    }
+
     @Patch('update-milestone/:id')
     async updateMilestoneById(@Body() body, @Param() params, @Res() response: Response) {
         const { id } = params;
-        const { description, status, progress, startDate, endDate } = body;
-        const milestone = await this.milestoneService.updateMilestone(id, description, status, progress, startDate, endDate);
+        const { description, status } = body;
+        const milestone = await this.milestoneService.updateMilestone(id, description, status);
         response.json(milestone);
     }
 
