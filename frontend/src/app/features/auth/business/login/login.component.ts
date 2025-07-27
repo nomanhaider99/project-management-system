@@ -45,13 +45,9 @@ export class BusinessLoginComponent {
             this.type = "success";
             this.message = res.message;
             if (!res.data.tagline && !res.data.description && !res.data.address) {
-              setTimeout(() => {
-                this.router.navigateByUrl('/business/onboarding');
-              }, 500)
+              this.router.navigateByUrl('/business/onboarding');
             } else {
-              setTimeout(() => {
-                this.router.navigateByUrl('/business/dashboard');
-              }, 500)
+              this.router.navigateByUrl('/business/dashboard');
             }
 
           },

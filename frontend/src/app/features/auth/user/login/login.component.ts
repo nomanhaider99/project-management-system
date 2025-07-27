@@ -49,13 +49,9 @@ export class LoginComponent {
             this.message = res.message;
             console.log(res.data)
             if (!res.data.tagline && !res.data.description) {
-              setTimeout(() => {
-                this.router.navigateByUrl('/user/onboarding');
-              }, 500)
+              this.router.navigateByUrl('/user/onboarding');
             } else {
-              setTimeout(() => {
-                this.router.navigateByUrl('/user/dashboard');
-              }, 500)
+              this.router.navigateByUrl('/user/dashboard');
             }
           },
           error: (err) => {

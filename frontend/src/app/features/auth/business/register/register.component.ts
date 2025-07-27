@@ -49,9 +49,7 @@ export class BusinessRegisterComponent {
           next: (res) => {
             this.type = "success";
             this.message = res.message;
-            setTimeout(() => {
-              this.router.navigateByUrl('/business/login');
-            }, 500)
+            this.router.navigateByUrl('/business/login');
           },
           error: (err) => {
             this.type = "error";

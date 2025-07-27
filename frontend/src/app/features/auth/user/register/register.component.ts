@@ -53,9 +53,7 @@ export class RegisterComponent {
           next: (res) => {
             this.type = "success";
             this.message = res.message;
-            setTimeout(() => {
-              this.router.navigateByUrl('/user/login');
-            }, 500)
+            this.router.navigateByUrl('/user/login');
           },
           error: (err) => {
             this.type = "error";
