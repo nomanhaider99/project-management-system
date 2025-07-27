@@ -72,4 +72,11 @@ export class ProjectsController {
         const project = await this.projectService.deleteProject(id);
         response.json(project);
     }
+
+    @Get('update-project-progress/:id') 
+    async getMilestoneOfProject (@Param() params, @Res() response: Response) {
+        const { id } = params;
+        const project = await this.projectService.updateProjectProgress(id);
+        response.json(project);
+    }
 }

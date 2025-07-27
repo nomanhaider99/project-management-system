@@ -13,9 +13,15 @@ export class UserDashboardComponent {
   component: string = 'projects';
   userService: UserService = inject(UserService);
   user: any;
+  projectId: string = '';
 
   onTabClick(comp: string) {
     this.component = comp
+  }
+
+  onViewButtonClick (value: any) {
+    this.component = value.comp;
+    this.projectId = value.id;
   }
 
   getBusiness() {

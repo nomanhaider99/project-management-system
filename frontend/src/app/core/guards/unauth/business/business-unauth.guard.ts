@@ -8,10 +8,10 @@ export const businessUnauthGuard: CanActivateFn = async (route, state) => {
 
   const isLoggedIn = await businessService.isBusinessLoggedIn();
 
-  if (isLoggedIn) {
-    return false;
+  if (!isLoggedIn) {
+    return true;
   } else {
     router.navigateByUrl('/business/dashboard');
-    return true;
+    return false;
   }
 };

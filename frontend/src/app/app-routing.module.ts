@@ -25,11 +25,13 @@ const routes: Routes = [
     path: 'user/register',
     component: RegisterComponent,
     pathMatch: 'full',
+    canActivate: [userUnauthGuard]
   },
   {
     path: 'user/login',
     component: LoginComponent,
     pathMatch: 'full',
+    canActivate: [userUnauthGuard]
   },
   {
     path: 'user/onboarding',
@@ -46,11 +48,14 @@ const routes: Routes = [
   {
     path: 'business/register',
     component: BusinessRegisterComponent,
+    pathMatch: 'full',
+    canActivate: [businessUnauthGuard]
   },
   {
     path: 'business/login',
     component: BusinessLoginComponent,
     pathMatch: 'full',
+    canActivate: [businessUnauthGuard]
   },
   {
     path: 'business/onboarding',

@@ -19,7 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { UserDashboardModule } from './features/dashboard/user/user.module';
 import { CreateProjectModule } from './shared/components/create-project/create-project.module';
 import { BusinessDashboardModule } from './features/dashboard/business/business.module';
-import { AddTaskComponent } from './shared/components/add-task/add-task.component';
+import { ProjectsModule } from './shared/components/projects/projects.module';
 
 @NgModule({
   declarations: [
@@ -46,7 +46,8 @@ import { AddTaskComponent } from './shared/components/add-task/add-task.componen
     HttpClientModule,
     UserDashboardModule,
     BusinessDashboardModule,
-    CreateProjectModule
+    CreateProjectModule,
+    ProjectsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

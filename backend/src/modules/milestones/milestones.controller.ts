@@ -43,6 +43,13 @@ export class MilestonesController {
         response.json(milestone);
     }
 
+    @Get('update-milestone-progress/:id/:project')
+    async updateMilestoneStatus(@Param() params, @Res() response: Response) {
+        const { id, project } = params;
+        const milestone = await this.milestoneService.updateMilestoneStatus(id, project);
+        response.json(milestone);
+    }
+
     @Delete('delete-milestone/:id')
     async deleteMilestoneById(@Param() params, @Res() response: Response) {
         const { id } = params;

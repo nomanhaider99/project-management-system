@@ -6,6 +6,7 @@ import { LogoComponent } from "src/app/shared/components/logo/logo.component";
 import { AppRoutingModule } from "src/app/app-routing.module";
 import { CreateProjectModule } from "src/app/shared/components/create-project/create-project.module";
 import { CommonModule } from "@angular/common";
+import { UserViewProjectModule } from "src/app/shared/components/user-view-component/view-component.module";
 
 @NgModule({
     imports: [
@@ -14,7 +15,8 @@ import { CommonModule } from "@angular/common";
         LogoComponent,
         AppRoutingModule,
         CreateProjectModule,
-        CommonModule
+        CommonModule,
+        UserViewProjectModule
     ],
     declarations: [
         UserDashboardComponent

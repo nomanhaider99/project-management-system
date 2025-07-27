@@ -8,9 +8,10 @@ export const userUnauthGuard: CanActivateFn = async (route, state) => {
 
   const isLoggedIn = await userService.isLoggedIn();
 
-  if (isLoggedIn) {
-    return false;
-  } else {
+  if (!isLoggedIn) {
     return true;
+  } else {
+    router.navigateByUrl('/user/dashboard');
+    return false;
   }
 };

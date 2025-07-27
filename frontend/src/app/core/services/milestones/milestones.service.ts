@@ -17,4 +17,8 @@ export class MilestoneService {
     getMilestonesOfProject (project: string): Observable<any> {
         return this.http.get(`${environments.API_BASE_URL}/milestones/get-milestone-of-project/${project}`);
     }
+
+    updateMilestoneStatus (milestone: string, project: string) {
+        return this.http.get(`${environments.API_BASE_URL}/milestones/update-milestone-progress/${milestone}/${project}`);
+    }
 }

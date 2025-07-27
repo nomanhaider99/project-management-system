@@ -1,14 +1,14 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { ProjectsComponent } from "./projects.component";
-import { ProjectModule } from "../project/project.module";
 import { ButtonModule } from "../button/button.module";
+import { UserProjectModule } from "../user-project/project.module";
 
 @NgModule({
     imports: [
         CommonModule,
-        ProjectModule,
-        ButtonModule
+        ButtonModule,
+        UserProjectModule
     ],
     declarations: [
         ProjectsComponent

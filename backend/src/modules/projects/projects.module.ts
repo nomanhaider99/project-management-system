@@ -5,6 +5,7 @@ import { Project, ProjectSchema } from "./project.models";
 import { Business, BusinessSchema } from "src/modules/businesses/business.models";
 import { ProjectsController } from "./projects.controller";
 import { User, UserSchema } from "../users/user.models";
+import { Milestone, MilestoneSchema } from "../milestones/milestone.models";
 
 @Module({
     imports: [
@@ -21,6 +22,10 @@ import { User, UserSchema } from "../users/user.models";
                 {
                     name: User.name,
                     schema: UserSchema
+                },
+                {
+                    name: Milestone.name,
+                    schema: MilestoneSchema
                 }
             ]
         )

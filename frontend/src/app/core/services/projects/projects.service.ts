@@ -40,4 +40,8 @@ export class ProjectsService {
         const data = { username }
         return this.http.patch(`${environments.API_BASE_URL}/projects/add-member-by-username/${id}`, data);
     }
+
+    updateProjectProgress (id: string) {
+        return this.http.get(`${environments.API_BASE_URL}/projects/update-project-progress/${id}`);
+    }
 }

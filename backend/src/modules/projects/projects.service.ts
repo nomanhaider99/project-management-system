@@ -4,10 +4,11 @@ import { Model } from "mongoose";
 import { Business } from "src/modules/businesses/business.models";
 import { Project } from "./project.models";
 import { User } from "../users/user.models";
+import { Milestone } from "../milestones/milestone.models";
 
 @Injectable()
 export class ProjectService {
-    constructor(@InjectModel(Project.name) private projectModel: Model<Project>, @InjectModel(Business.name) private businessModel: Model<Business>, @InjectModel(User.name) private userModel: Model<User>) { }
+    constructor(@InjectModel(Project.name) private projectModel: Model<Project>, @InjectModel(Business.name) private businessModel: Model<Business>, @InjectModel(User.name) private userModel: Model<User>, @InjectModel(Milestone.name) private milestoneModel: Model<Milestone>) { }
 
     async createProject(title: string, description: string, owner: Business, status: 'ongoing' | 'completed' | 'expired', priority: 'low' | 'medium' | 'urgent', startDate: string) {
         if (!title || title.length < 6 || title.length > 25) {
@@ -348,5 +349,60 @@ export class ProjectService {
                 data: deletedProject
             }
         }
+    }
+
+    async updateProjectProgress(id: string) {
+        if (!id) {
+            throw new BadRequestException(
+                {
+                    message: 'Invalid Id!'
+                }
+            )
+        }
+
+        const project = await this.projectModel.findOne({
+            _id: id
+        })
+
+        if (!project) {
+            throw new NotFoundException(
+                {
+                    message: 'Project Not Found!'
+                }
+            )
+        } else {
+            const totalMilestones = await this.milestoneModel.find({
+                _id: {
+                    $in: project.milestones
+                },
+            });
+
+            const milestones = await this.milestoneModel.find({
+                _id: {
+                    $in: project.milestones
+                },
+                status: 'completed'
+            });
+            if (!totalMilestones.length) {
+                throw new NotFoundException(
+                    {
+                        message: 'Milestone Doesnot Exists In Project!'
+                    }
+                )
+            } else {
+                const lengthOfTotalMilestones = totalMilestones.length;
+                const progress = (milestones.length*100)/lengthOfTotalMilestones;
+
+                await project.updateOne({
+                    progress: progress
+                });
+                return {
+                    message: 'Milestone Progress Updated!',
+                    data: progress
+                }
+            }
+        }
+
+        
     }
 }

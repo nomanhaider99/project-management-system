@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { BusinessService } from 'src/app/core/services/business/business.service';
 import { ProjectsService } from 'src/app/core/services/projects/projects.service';
 import { UserService } from 'src/app/core/services/users/users.service';
@@ -14,7 +14,11 @@ export class ProjectsComponent implements OnInit, OnChanges {
   projectsService: ProjectsService = inject(ProjectsService);
   usersService: UserService = inject(UserService);
   owner: string = '';
+  @Output() viewClickEmmiter = new EventEmitter();
 
+  viewClick(value: any) {
+    this.viewClickEmmiter.emit(value);
+  }
 
   fetchData() {
     this.usersService.getLoggedInUser().subscribe({

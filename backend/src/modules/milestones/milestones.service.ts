@@ -25,7 +25,8 @@ export class MilestonesService {
 
         const milestoneExists = await this.milestoneModel.findOne(
             {
-                title
+                title,
+                project
             }
         );
 
@@ -147,6 +148,74 @@ export class MilestonesService {
             return {
                 message: 'Milestone Updated Successfully!',
                 data: updatedMilestone
+            }
+        }
+    }
+
+    async updateMilestoneStatus(id: string, projectId: string) {
+        if (!id) {
+            throw new BadRequestException(
+                {
+                    message: 'Invalid Id!',
+                }
+            )
+        }
+
+        const milestone = await this.milestoneModel.findOne({
+            _id: id
+        });
+
+
+        if (!milestone) {
+            throw new NotFoundException(
+                {
+                    message: 'Milestone Not Found!',
+                }
+            )
+        } else {
+            await milestone.updateOne({
+                status: 'completed'
+            });
+            const project = await this.projectModel.findOne({
+                _id: projectId
+            });
+            if (!project) {
+                throw new NotFoundException(
+                    {
+                        message: 'Project Not Found!'
+                    }
+                );
+            } else {
+                const totalMilestones = await this.milestoneModel.find({
+                    _id: {
+                        $in: project.milestones
+                    },
+                });
+
+                const completedMilestones = await this.milestoneModel.find({
+                    _id: {
+                        $in: project.milestones
+                    },
+                    status: 'completed'
+                });
+
+                const progress = (completedMilestones.length*100)/totalMilestones.length;
+
+                if (progress < 100) {
+                    await project.updateOne({
+                        progress
+                    })
+                } else {
+                    await project.updateOne({
+                        progress,
+                        status: 'completed'
+                    })
+                }
+
+
+                return {
+                    message: 'Milestone Progress Updated Successfully!'
+                }
             }
         }
     }

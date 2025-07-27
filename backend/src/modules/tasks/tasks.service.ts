@@ -30,7 +30,8 @@ export class TasksService {
 
         const taskExists = await this.taskModel.findOne(
             {
-                title
+                title,
+                milestone
             }
         );
 
